@@ -2,6 +2,7 @@ package com.example.project.controller;
 
 import com.example.project.config.TestConfig;
 import com.example.project.config.WebConfig;
+import com.example.project.model.Role;
 import com.example.project.model.User;
 import com.example.project.service.UserService;
 import org.junit.Before;
@@ -50,9 +51,9 @@ public class WebApplicationContextUsersControllerTest {
 
     @Test
     public void whenAddUsersAndGetRequestAllUsersThenAllUsersAddedToModelAndUsersViewRendered() throws Exception {
-        User userOne = new User("NameOne", "LastNameOne", (byte) 1);
+        User userOne = new User("NameOne", "LastNameOne", (byte) 1, Role.VISITOR);
         userOne.setId(1L);
-        User userTwo = new User("NameTwo", "LastNameTwo", (byte) 2);
+        User userTwo = new User("NameTwo", "LastNameTwo", (byte) 2, Role.VISITOR);
         userTwo.setId(2L);
 
         when(userServiceMock.listUsers()).thenReturn(Arrays.asList(userOne, userTwo));
@@ -95,7 +96,7 @@ public class WebApplicationContextUsersControllerTest {
 
     @Test
     public void whenAddOneUserAndGetRequestEditUserThenUserAddedToModelAndEditViewRendered() throws Exception {
-        User userOne = new User("NameOne", "LastNameOne", (byte) 1);
+        User userOne = new User("NameOne", "LastNameOne", (byte) 1, Role.VISITOR);
         userOne.setId(1L);
 
         when(userServiceMock.getById(userOne.getId())).thenReturn(userOne);
@@ -114,7 +115,7 @@ public class WebApplicationContextUsersControllerTest {
 
     @Test
     public void whenAddOneUserAndGetRequestDeleteUserThenUserDeletedAndUsersViewRendered() throws Exception {
-        User userOne = new User("NameOne", "LastNameOne", (byte) 1);
+        User userOne = new User("NameOne", "LastNameOne", (byte) 1, Role.VISITOR);
         userOne.setId(1L);
 
         when(userServiceMock.getById(userOne.getId())).thenReturn(userOne);
@@ -133,14 +134,15 @@ public class WebApplicationContextUsersControllerTest {
 
     @Test
     public void whenPostRequestAddUserThenFormHasCorrectValuesAndModelHasProperAttributeAndServiceAddCalledOnceAndUsersViewRendered() throws Exception {
-        User userOne = new User("NameOne", "LastNameOne", (byte) 1);
+        User userOne = new User("NameOne", "LastNameOne", (byte) 1, Role.VISITOR);
         userOne.setId(1L);
 
         mockMvc.perform(post("/users/add")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "NameOne")
                 .param("lastName", "LastNameOne")
-                .param("age","1"))
+                .param("age","1")
+                .param("role", Role.VISITOR.toString()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/users"))
@@ -148,7 +150,8 @@ public class WebApplicationContextUsersControllerTest {
                 .andExpect(model().attribute("user", isA(User.class)))
                 .andExpect(model().attribute("user", hasProperty("name", is(userOne.getName()))))
                 .andExpect(model().attribute("user", hasProperty("lastName", is(userOne.getLastName()))))
-                .andExpect(model().attribute("user", hasProperty("age", is(userOne.getAge()))));
+                .andExpect(model().attribute("user", hasProperty("age", is(userOne.getAge()))))
+                .andExpect(model().attribute("user", hasProperty("role", is(userOne.getRole()))));
 
         ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
         verify(userServiceMock, times(1)).add(formObjectArgument.capture());
@@ -157,26 +160,25 @@ public class WebApplicationContextUsersControllerTest {
         assertThat(formObject.getName(), is(userOne.getName()));
         assertThat(formObject.getLastName(), is(userOne.getLastName()));
         assertThat(formObject.getAge(), is(userOne.getAge()));
+        assertThat(formObject.getRole(), is(userOne.getRole()));
     }
 
     @Test
-    public void whenPostRequestEditUserThenFormHasCorrectValuesAndModelHasProperAttributeAndServiceAddCalledOnceAndUsersViewRendered() throws Exception {
-        User userOne = new User("NameOne", "LastNameOne", (byte) 1);
+    public void whenPostRequestEditUserThenFormHasCorrectValuesAndServiceAddCalledOnceAndUsersViewRendered() throws Exception {
+        User userOne = new User("NameOne", "LastNameOne", (byte) 1, Role.ADMIN);
         userOne.setId(1L);
 
         mockMvc.perform(post("/users/edit")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "NameOne")
                 .param("lastName", "LastNameOne")
-                .param("age","1"))
+                .param("age","1")
+                .param("role", Role.ADMIN.toString())
+                .param("weekDays", "NOT SELECTED YET"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/users"))
-                .andExpect(redirectedUrl("/users"))
-                .andExpect(model().attribute("user", isA(User.class)))
-                .andExpect(model().attribute("user", hasProperty("name", is(userOne.getName()))))
-                .andExpect(model().attribute("user", hasProperty("lastName", is(userOne.getLastName()))))
-                .andExpect(model().attribute("user", hasProperty("age", is(userOne.getAge()))));
+                .andExpect(redirectedUrl("/users"));
 
         ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
         verify(userServiceMock, times(1)).edit(formObjectArgument.capture());
@@ -185,5 +187,6 @@ public class WebApplicationContextUsersControllerTest {
         assertThat(formObject.getName(), is(userOne.getName()));
         assertThat(formObject.getLastName(), is(userOne.getLastName()));
         assertThat(formObject.getAge(), is(userOne.getAge()));
+        assertThat(formObject.getRole(), is(userOne.getRole()));
     }
 }

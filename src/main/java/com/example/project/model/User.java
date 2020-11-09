@@ -6,6 +6,8 @@ import javax.persistence.Table;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 @Entity
 @Table
@@ -23,14 +25,19 @@ public class User {
     @Column
     private Byte age;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     public User() {
 
     }
 
-    public User(String name, String lastName, Byte age) {
+    public User(String name, String lastName, Byte age, Role role) {
         this.name = name;
         this.lastName = lastName;
         this.age = age;
+        this.role = role;
     }
 
     public Long getId() {
@@ -65,6 +72,14 @@ public class User {
         this.age = age;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -72,6 +87,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
+                ", role=" + role +
                 '}';
     }
 }

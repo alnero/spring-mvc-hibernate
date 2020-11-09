@@ -12,6 +12,7 @@
       <td>Name</td>
       <td>Last Name</td>
       <td>Age</td>
+      <td>Role</td>
       <td>Edit/Delete</td>
     </tr>
     <tr th:each="user : ${users}">
@@ -19,6 +20,7 @@
       <td th:text="${user.name}"></td>
       <td th:text="${user.lastName}"></td>
       <td th:text="${user.age}"></td>
+      <td th:text="${user.role}"></td>
       <td>
         <a th:href="@{/users/edit(id=${user.id})}">Edit</a>
         <a th:href="@{/users/delete(id=${user.id})}">Delete</a>
@@ -26,5 +28,8 @@
     </tr>
   </table>
   <a th:href="@{/users/add}">Add user</a>
+
+  <h3>Last selected week days:</h3>
+  <p th:text="${weekDays} == null ? '[NOT SELECTED YET]' : ${weekDays} ">Week days</p>
 </body>
 </html>

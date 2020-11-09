@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -49,8 +51,9 @@ public class UsersController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute User user) {
+    public String edit(@ModelAttribute User user, @RequestParam("weekDays") String[] weekDays, RedirectAttributes redirectAttributes) {
         userService.edit(user);
+        redirectAttributes.addFlashAttribute("weekDays", Arrays.toString(weekDays));
         return "redirect:/users";
     }
 

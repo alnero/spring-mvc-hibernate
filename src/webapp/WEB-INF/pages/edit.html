@@ -6,11 +6,34 @@
 </head>
 <body>
   <h3>Edit user</h3>
-  <form action="#" th:action="@{/users/edit}" th:object="${user}" method="post">
-    <input type="hidden" th:field="*{id}" />
-    <p>Name: <input type="text" th:field="*{name}" /></p>
-    <p>Last Name: <input type="text" th:field="*{lastName}" /></p>
-    <p>Age: <input type="text" th:field="*{age}" /></p>
+  <form action="/users/edit" method="post">
+    <input type="hidden" id="id" name="id" th:value="${user.id}" />
+    <p>Name: <input type="text" id="name" name="name" th:value="${user.name}" /></p>
+    <p>Last Name: <input type="text" id="lastName" name="lastName" th:value="${user.lastName}" /></p>
+    <p>Age: <input type="text" id="age" name="age" th:value="${user.age}" /></p>
+    <p>
+      <label for="role">Role: </label>
+      <select name="role" id="role">
+        <option th:each="roleValue : ${T(com.example.project.model.Role).values()}"
+                th:value="${roleValue}"
+                th:text="${roleValue}"
+                th:selected="${roleValue==user.role}">
+        </option>
+      </select>
+    </p>
+    <p>
+      <label for="weekDays">Week Days (hold Ctrl or Cmd to select multiple): </label>
+      <select name="weekDays" id="weekDays" multiple="multiple">
+        <option hidden="hidden" selected="selected" value="NOT SELECTED YET">[NOT SELECTED YET]</option>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
+      </select>
+    </p>
     <p><input type="submit" value="EDIT" /></p>
   </form>
 </body>

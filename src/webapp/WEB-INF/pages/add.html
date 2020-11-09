@@ -10,6 +10,7 @@
     <p>Name: <input type="text" th:field="*{name}" /></p>
     <p>Last Name: <input type="text" th:field="*{lastName}" /></p>
     <p>Age: <input type="text" th:field="*{age}" /></p>
+    <input type="hidden" id="role" name="role" th:value="${T(com.example.project.model.Role).VISITOR}" />
     <p><input type="submit" value="ADD" /></p>
   </form>
 </body>
